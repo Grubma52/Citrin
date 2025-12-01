@@ -22,10 +22,14 @@ jobs:
           tar -xzf kotlin-native-linux-x86_64-$KOTLIN_VERSION.tar.gz
           echo "$PWD/kotlin-native-linux-x86_64-$KOTLIN_VERSION/bin" >> $GITHUB_PATH
 
+      - name: Ensure build directory exists
+        run: |
+          mkdir -p build/${{ matrix.target }}
+
       - name: Build with Kotlin/Native
         run: |
           kotlinc-native main.kt \
-            -o build/${{ matrix.target }}/app.kexe \
+            -o build/${{ matrix.target }}/app \
             -target ${{ matrix.target }}
 
       - name: Upload artifact
