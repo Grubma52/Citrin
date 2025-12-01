@@ -25,7 +25,7 @@ jobs:
       - name: Build with Kotlin/Native
         run: |
           kotlinc-native main.kt \
-            -o build/${{ matrix.target }}/app \
+            -o build/${{ matrix.target }}/app.kexe \
             -target ${{ matrix.target }}
 
       - name: Upload artifact
