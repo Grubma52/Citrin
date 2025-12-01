@@ -1,0 +1,35 @@
+name: Kotlin/Native Cross-Compile
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build for ${{ matrix.target }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [linux_x64, linux_arm64]
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install Kotlin/Native compiler
+        run: |
+          KOTLIN_VERSION=1.9.23
+          wget https://github.com/JetBrains/kotlin/releases/download/v$KOTLIN_VERSION/kotlin-native-linux-x86_64-$KOTLIN_VERSION.tar.gz
+          tar -xzf kotlin-native-linux-x86_64-$KOTLIN_VERSION.tar.gz
+          echo "$PWD/kotlin-native-linux-x86_64-$KOTLIN_VERSION/bin" >> $GITHUB_PATH
+
+      - name: Build with Kotlin/Native
+        run: |
+          kotlinc-native main.kt \
+            -o build/${{ matrix.target }}/app \
+            -target ${{ matrix.target }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.target }}
+          path: build/${{ matrix.target }}/
